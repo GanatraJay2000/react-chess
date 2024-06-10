@@ -12,15 +12,21 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --tsz: 100px;
+  --tsz-def: 80px;
+  --tsz: var(--tsz-def);
+  --tsz-half: calc(var(--tsz-def) / 2);
+  --tsz-third: calc(var(--tsz-def) / 3);
   --bsz: calc(var(--tsz) * 8);
+
   --tile-light: #eeeed2;
   --tile-dark: #769656;
+  /* --tile-dark: #4b7399; */
+  --tile-highlight: #00000022;
   --bg-color: #202020;
 }
 
 @media (max-width: 640px) {
   :root {
-    --tsz: 50px;
+    --tsz: var(--tsz-half);
   }
 }

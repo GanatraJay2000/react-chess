@@ -3,3 +3,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[draggable] {
+  transform: translateX(0);
+}
+
+.tile--highlight::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  height: var(--tsz-third);
+  width: var(--tsz-third);
+  border-radius: 50%;
+  background-color: var(--tile-highlight);
+  pointer-events: none;
+}
+
+.tile--candidate::after {
+  --z: 1px;
+  content: "";
+  position: absolute;
+  margin: var(--z);
+  height: calc(var(--tsz) - var(--z) * 2);
+  width: calc(var(--tsz) - var(--z) * 2);
+  border-radius: 50%;
+  border: 9px solid var(--tile-highlight);
+  pointer-events: none;
+}

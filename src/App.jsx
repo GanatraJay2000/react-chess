@@ -13,8 +13,8 @@ function App() {
 
   return (
     <AppContext.Provider value={providerState}>
-      <div className="App grid md:place-content-center bg-[var(--bg-color)] h-screen">
-        <div className="h-bsz flex gap-5 flex-col md:flex-row items-center justify-center ">
+      <div className="App grid md:place-content-center bg-[var(--bg-color)] min-h-screen">
+        <div className="min-h-bsz flex gap-5 flex-col lg:flex-row items-center justify-center ">
           <Board />
           <Controls>
             <MovesList />

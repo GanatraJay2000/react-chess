@@ -7,6 +7,7 @@ function MovesList() {
   } = useAppContext();
   return (
     <div className="grow">
+      <h1 className="text-xl mb-3">Moves</h1>
       <div className=" items-start grid grid-cols-5 relative">
         {movesList.map((move, i) => (
           <React.Fragment key={i}>

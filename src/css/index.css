@@ -32,3 +32,13 @@
   border: 9px solid var(--tile-highlight);
   pointer-events: none;
 }
+
+.tile--checked::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  height: var(--tsz);
+  width: var(--tsz);
+  background-color: var(--tile-check);
+  pointer-events: none;
+}

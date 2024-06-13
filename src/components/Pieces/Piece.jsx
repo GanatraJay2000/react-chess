@@ -9,7 +9,7 @@ import {
 
 function Piece({ rank, file, piece }) {
   const { appState, dispatch } = useAppContext();
-  const { turn, positions } = appState;
+  const { turn, castlingDirection, positions } = appState;
   const currentPosition = positions[positions.length - 1];
 
   const setData = (e, tag, val) => {
@@ -30,6 +30,7 @@ function Piece({ rank, file, piece }) {
         pos: currentPosition,
         prevPos: positions[positions.length - 2],
         piece,
+        castlingDirection: castlingDirection[turn],
         rank,
         file,
       });
@@ -49,6 +50,8 @@ function Piece({ rank, file, piece }) {
         `piece ${piece} p-${rank}${file} w-[var(--tsz)] h-[var(--tsz)] bg-100% z-[2]`
       )}
       style={{
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
         backgroundImage: `url("/src/assets/pieces/${piece}.png")`,
         gridColumnStart: file + 1,
         gridRowStart: rank + 1,

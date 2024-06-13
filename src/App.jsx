@@ -3,6 +3,9 @@ import Board from "./components/Board/Board.jsx";
 import AppContext from "./contexts/Context.js";
 import { reducer } from "./reducer/Reducer.js";
 import { initialGameState } from "./util/constants.js";
+import Controls from "./components/Controls/Controls.jsx";
+import MovesList from "./components/Controls/bits/MovesList.jsx";
+import TakeBack from "./components/Controls/bits/TakeBack.jsx";
 
 function App() {
   const [appState, dispatch] = useReducer(reducer, initialGameState);
@@ -10,8 +13,14 @@ function App() {
 
   return (
     <AppContext.Provider value={providerState}>
-      <div className="App grid place-content-center bg-[var(--bg-color)] h-screen">
-        <Board />
+      <div className="App grid md:place-content-center bg-[var(--bg-color)] h-screen">
+        <div className="h-bsz flex gap-5 flex-col md:flex-row items-center justify-center ">
+          <Board />
+          <Controls>
+            <MovesList />
+            <TakeBack />
+          </Controls>
+        </div>
       </div>
     </AppContext.Provider>
   );

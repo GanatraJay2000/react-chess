@@ -1,3 +1,5 @@
+import arbiter from "./arbiter";
+
 export const getRookMoves = ({ pos, piece, rank, file }) => {
   const moves = [];
   const us = piece[0];
@@ -163,4 +165,208 @@ export const getPawnCaptures = ({ pos, prevPos, piece, rank, file }) => {
   }
 
   return moves;
+};
+
+export const getCastlingMoves = ({
+  pos,
+  castlingDirection,
+  piece,
+  rank,
+  file,
+}) => {
+  const moves = [];
+
+  if (file !== 4 || rank % 7 !== 0 || castlingDirection === "none")
+    return moves;
+
+  if (piece.startsWith("w")) {
+    if (
+      arbiter.isPlayerInCheck({
+        positionAfterMove: pos,
+        player: "w",
+      })
+    )
+      return moves;
+
+    if (
+      ["left", "both"].includes(castlingDirection) &&
+      !pos[7][1] &&
+      !pos[7][2] &&
+      !pos[7][3] &&
+      pos[7][0] === "wr" &&
+      !arbiter.isPlayerInCheck({
+        positionAfterMove: arbiter.performMove({
+          pos,
+          piece,
+          rank,
+          file,
+          x: 7,
+          y: 3,
+        }),
+        player: "w",
+      }) &&
+      !arbiter.isPlayerInCheck({
+        positionAfterMove: arbiter.performMove({
+          pos,
+          piece,
+          rank,
+          file,
+          x: 7,
+          y: 2,
+        }),
+        player: "w",
+      })
+    )
+      moves.push([7, 2]);
+
+    if (
+      ["right", "both"].includes(castlingDirection) &&
+      !pos[7][5] &&
+      !pos[7][6] &&
+      pos[7][7] === "wr" &&
+      !arbiter.isPlayerInCheck({
+        positionAfterMove: arbiter.performMove({
+          pos,
+          piece,
+          rank,
+          file,
+          x: 7,
+          y: 5,
+        }),
+        player: "w",
+      }) &&
+      !arbiter.isPlayerInCheck({
+        positionAfterMove: arbiter.performMove({
+          pos,
+          piece,
+          rank,
+          file,
+          x: 7,
+          y: 6,
+        }),
+        player: "w",
+      })
+    )
+      moves.push([7, 6]);
+  } else {
+    if (
+      arbiter.isPlayerInCheck({
+        positionAfterMove: pos,
+        player: "b",
+      })
+    )
+      return moves;
+
+    if (
+      ["left", "both"].includes(castlingDirection) &&
+      !pos[0][1] &&
+      !pos[0][2] &&
+      !pos[0][3] &&
+      pos[0][0] === "br" &&
+      !arbiter.isPlayerInCheck({
+        positionAfterMove: arbiter.performMove({
+          pos,
+          piece,
+          rank,
+          file,
+          x: 0,
+          y: 3,
+        }),
+        pos: pos,
+        player: "b",
+      }) &&
+      !arbiter.isPlayerInCheck({
+        positionAfterMove: arbiter.performMove({
+          pos,
+          piece,
+          rank,
+          file,
+          x: 0,
+          y: 2,
+        }),
+        pos: pos,
+        player: "b",
+      })
+    )
+      moves.push([0, 2]);
+
+    if (
+      ["right", "both"].includes(castlingDirection) &&
+      !pos[0][5] &&
+      !pos[0][6] &&
+      pos[0][7] === "br" &&
+      !arbiter.isPlayerInCheck({
+        positionAfterMove: arbiter.performMove({
+          pos,
+          piece,
+          rank,
+          file,
+          x: 0,
+          y: 5,
+        }),
+        pos,
+        player: "b",
+      }) &&
+      !arbiter.isPlayerInCheck({
+        positionAfterMove: arbiter.performMove({
+          pos,
+          piece,
+          rank,
+          file,
+          x: 0,
+          y: 6,
+        }),
+        pos,
+        player: "b",
+      })
+    )
+      moves.push([0, 6]);
+  }
+
+  return moves;
+};
+
+export const getCastlingDirections = ({
+  castlingDirection,
+  piece,
+  rank,
+  file,
+}) => {
+  const direction = castlingDirection[piece[0]];
+  if (piece.endsWith("k")) return "none";
+
+  if (file == 7 && (rank == 0 || rank == 7)) {
+    if (direction === "both") return "left";
+    else if (direction === "right") return "none";
+  }
+  if (file == 0 && (rank == 0 || rank == 7)) {
+    if (direction === "both") return "right";
+    else if (direction === "left") return "none";
+  }
+};
+
+export const getPieces = (pos, enemy) => {
+  const enemyPieces = [];
+  pos.forEach((rank, x) => {
+    rank.forEach((file, y) => {
+      if (pos[x][y].startsWith(enemy))
+        enemyPieces.push({
+          piece: pos[x][y],
+          rank: x,
+          file: y,
+        });
+    });
+  });
+  return enemyPieces;
+};
+
+export const getKingPos = (pos, player) => {
+  let kingPos;
+  pos.forEach((rank, x) => {
+    rank.forEach((file, y) => {
+      if (pos[x][y].startsWith(player) && pos[x][y].endsWith("k"))
+        kingPos = [x, y];
+    });
+  });
+  return kingPos;
 };

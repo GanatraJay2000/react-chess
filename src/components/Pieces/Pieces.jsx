@@ -1,7 +1,15 @@
 import arbiter from "../../arbiter/arbiter";
+import { getCastlingDirections } from "../../arbiter/getMoves";
 import { useAppContext } from "../../contexts/Context";
+import {
+  detectedCheckMate,
+  detectedInsufficientMaterial,
+  detectedStalemate,
+  updateCastling,
+} from "../../reducer/actions/game";
 import { clearCandidates, makeNewMove } from "../../reducer/actions/move";
-import { copyBoard } from "../../util/helper";
+import { openPropmotion } from "../../reducer/actions/popup";
+import { copyBoard, getNewMoveNotation } from "../../util/helper";
 import Piece from "./Piece";
 import { useRef } from "react";
 
@@ -20,11 +28,36 @@ function Pieces() {
     return { x, y };
   };
 
+  const openPromotionBox = ({ rank, file, x, y }) => {
+    dispatch(openPropmotion({ rank: Number(rank), file: Number(file), x, y }));
+  };
+
+  const updateCastlingState = ({ rank, file, piece }) => {
+    const direction = getCastlingDirections({
+      castlingDirection: appState.castlingDirection,
+      piece,
+      rank,
+      file,
+    });
+    if (direction) dispatch(updateCastling(direction));
+  };
+
   const move = (e) => {
     const { x, y } = coordinates(e);
     const { rank, file, piece } = appState.selectedPiece;
 
     if (appState.candidateMoves?.find(([i, j]) => x === i && y === j)) {
+      const opponent = piece.startsWith("b") ? "w" : "b";
+      const castlingDirection = appState.castlingDirection[`${opponent}`];
+      if ((piece === "wp" && x === 0) || (piece === "bp" && x === 7)) {
+        openPromotionBox({ rank, file, x, y });
+        return;
+      }
+
+      if (piece.endsWith("k") || piece.endsWith("r")) {
+        updateCastlingState({ rank, file, piece });
+      }
+
       const newPosition = arbiter.performMove({
         pos: copyBoard(currentPosition),
         piece,
@@ -33,7 +66,24 @@ function Pieces() {
         x,
         y,
       });
-      dispatch(makeNewMove({ newPosition }));
+
+      const newMove = getNewMoveNotation({
+        piece,
+        rank,
+        file,
+        x,
+        y,
+        position: currentPosition,
+      });
+
+      dispatch(makeNewMove({ newPosition, newMove }));
+
+      if (arbiter.isCheckMate(newPosition, opponent, castlingDirection))
+        dispatch(detectedCheckMate(piece[0]));
+      else if (arbiter.insufficientMaterial(newPosition))
+        dispatch(detectedInsufficientMaterial());
+      else if (arbiter.isStalemate(newPosition, opponent, castlingDirection))
+        dispatch(detectedStalemate());
     }
     dispatch(clearCandidates());
   };

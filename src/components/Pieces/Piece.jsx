@@ -52,7 +52,7 @@ function Piece({ rank, file, piece }) {
       style={{
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
-        backgroundImage: `url("/src/assets/pieces/${piece}.png")`,
+        backgroundImage: `url("/assets/pieces/${piece}.png")`,
         gridColumnStart: file + 1,
         gridRowStart: rank + 1,
       }}

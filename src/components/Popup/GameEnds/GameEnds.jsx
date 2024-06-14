@@ -21,7 +21,7 @@ function GameEnds() {
       style={{
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
-        backgroundImage: `url("/src/assets/pieces/${pc}.png")`,
+        backgroundImage: `url("/assets/pieces/${pc}.png")`,
       }}
     />
   );

@@ -52,7 +52,7 @@ function PromotionBox({ onClosePopup }) {
             style={{
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center",
-              backgroundImage: `url("/src/assets/pieces/${color}${option}.png")`,
+              backgroundImage: `url("/assets/pieces/${color}${option}.png")`,
             }}
             onClick={() => onClick(option)}
           >
